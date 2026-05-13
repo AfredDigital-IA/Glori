@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Liderazgo Inspirador | Glori</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --gold: #d4af37;
+            --black: #1a1a1a;
+            --white: #ffffff;
+            --gray: #f8f9fa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--white);
+            color: var(--black);
+            overflow: hidden; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- PANTALLA 1: EL TELÓN (INICIAL) --- */
+        #welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('FamiliaMariaC.jpg') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+            color: white;
+            padding: 20px;
+        }
+
+        #welcome-screen h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 10vw, 5.5rem);
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        .play-trigger {
+            width: 95px;
+            height: 95px;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--gold);
+            cursor: pointer;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+
+        .play-trigger:hover { transform: scale(1.1); background: var(--gold); color: white; }
+
+        /* --- CONTROL FLOTANTE (APARECE DESPUÉS) --- */
+        .audio-control {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--gold);
+            cursor: pointer;
+            z-index: 2000;
+            background: rgba(255, 255, 255, 0.95);
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        /* --- PANTALLA 2: EL MENSAJE Y CONTENIDO --- */
+        #main-content {
+            opacity: 0;
+            transition: opacity 1s ease;
+            display: none;
+            background: var(--gray);
+        }
+
+        .presentation-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 20px 0 60px 0;
+        }
+
+        .slide {
+            width: 92%;
+            max-width: 1000px;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            padding: clamp(30px, 6vw, 60px);
+        }
+
+        .message-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            color: var(--gold);
+            margin-bottom: 25px;
+            line-height: 1.2;
+        }
+
+        .heart-message {
+            font-size: clamp(1rem, 4vw, 1.15rem);
+            line-height: 1.7;
+            color: #333;
+            font-weight: 300;
+        }
+
+        .heart-message p { margin-bottom: 20px; }
+
+        .img-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        /* Trivia */
+        .trivia-box {
+            background: var(--black);
+            color: var(--white);
+            padding: 35px 20px;
+            text-align: center;
+            border-radius: 15px;
+        }
+
+        .option-btn {
+            border: 1px solid var(--gold);
+            padding: 12px 20px;
+            margin: 8px 4px;
+            display: block;
+            cursor: pointer;
+            color: var(--gold);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            border-radius: 5px;
+        }
+
+        @media (min-width: 480px) { .option-btn { display: inline-block; } }
+        @media (min-width: 768px) {
+            .grid-layout { display: flex; gap: 40px; align-items: center; }
+            .grid-layout > div { flex: 1.2; }
+            .grid-layout > .img-container { flex: 0.8; margin-top: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="background-music" preload="auto" loop>
+        <source src="Gente Luminosa.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="float-control" class="audio-control" onclick="toggleMusic()">
+        <i id="control-icon" class="fa-solid fa-pause"></i>
+    </div>
+
+    <!-- PANTALLA 1: EL TELÓN -->
+    <div id="welcome-screen">
+        <p style="color: var(--gold); letter-spacing: 4px; font-weight: 600; font-size: 0.8rem; margin-bottom: 10px;">LIDERAZGO REGIONAL</p>
+        <h1>Maria Cecilia</h1>
+        <p style="margin-bottom: 30px; opacity: 0.9; font-weight: 300;">Tu liderazgo cercano es el motor de este equipo.</p>
+        <button class="play-trigger" onclick="startExperience()">
+            <i class="fa-solid fa-play"></i>
+        </button>
+        <p style="margin-top: 20px; font-size: 0.65rem; letter-spacing: 2px; opacity: 0.7;">TOCA PARA EMPEZAR</p>
+    </div>
+
+    <!-- PANTALLA 2: CONTENIDO CON TU MENSAJE -->
+    <main id="main-content">
+        <div class="presentation-wrapper">
+
+            <!-- SECCIÓN DEL MENSAJE (REEMPLAZA NUESTRA CONEXIÓN) -->
+            <section class="slide">
+                <div class="grid-layout">
+                    <div>
+                        <h2 class="message-title">Gente Luminosa</h2>
+                        <div class="heart-message">
+                            <p><strong>Maria C</strong>, hoy entendemos por qué “Gente Luminosa” te representa tanto: porque iluminas con tu esencia, inspiras con tu ejemplo y transformas desde la sencillez.</p>
+                            <p>En cada palabra, en cada conversación y en cada reto, has sido para nosotros una guía que inspira, una aprendiz permanente y una verdadera creadora de futuro.</p>
+                            <p>Quienes te conocen de cerca lo dicen siempre… Maria C es <em>amor, pasión, confianza y autenticidad.</em></p>
+                            <p>Y desde la <strong>Regional Centro</strong> queremos decirte algo que sentimos de corazón: gracias por liderar dejando huella en lo profesional, pero sobre todo en lo humano.</p>
+                        </div>
+                    </div>
+                    <div class="img-container">
+                        <img src="MariaCSerEjemplo.jpeg" alt="Liderazgo MariaC">
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRIVIA -->
+            <section class="slide">
+                <div class="trivia-box">
+                    <h2 style="color: white; border: none; font-size: 1.5rem; margin-bottom: 20px;">¿Qué nos hace brillar hoy?</h2>
+                    <div class="option-btn" onclick="revealTrivia('C')">Tu Liderazgo Cercano</div>
+                    <div class="option-btn" onclick="revealTrivia('A')">La Estrategia</div>
+                    <p id="trivia-result" style="margin-top: 15px; font-size: 1rem; color: var(--gold); min-height: 24px;"></p>
+                </div>
+            </section>
+
+            <!-- VIDEO FINAL -->
+            <section class="slide" style="text-align: center;">
+                <h2 style="font-family: 'Playfair Display'; margin-bottom: 25px;">Gracias por todo</h2>
+                <div style="background: #000; width: 100%; aspect-ratio: 16/9; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                    <p style="color: white; opacity: 0.5;"><i class="fa-solid fa-video"></i> [Video del Equipo]</p>
+                </div>
+                <p style="color: var(--gold); font-weight: 600; letter-spacing: 1px;">CON ADMIRACIÓN, TU EQUIPO</p>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        const music = document.getElementById('background-music');
+        const floatBtn = document.getElementById('float-control');
+        const icon = document.getElementById('control-icon');
+
+        function startExperience() {
+            music.play();
+            floatBtn.style.visibility = 'visible';
+            floatBtn.style.opacity = '1';
+            document.getElementById('welcome-screen').style.transform = 'translateY(-100%)';
+            const main = document.getElementById('main-content');
+            main.style.display = 'block';
+            setTimeout(() => { main.style.opacity = '1'; }, 100);
+            document.body.style.overflow = 'auto';
+        }
+
+        function toggleMusic() {
+            if (music.paused) { music.play(); icon.className = 'fa-solid fa-pause'; }
+            else { music.pause(); icon.className = 'fa-solid fa-play'; }
+        }
+
+        function revealTrivia(option) {
+            const result = document.getElementById('trivia-result');
+            result.innerText = (option === 'C') ? "¡Exacto! Eres nuestra brújula. ✨" : "¡Casi! Pero tu esencia es el motor.";
+        }
+    </script>
+</body>
+</html>
